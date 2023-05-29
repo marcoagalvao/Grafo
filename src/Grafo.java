@@ -3,6 +3,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
@@ -23,6 +24,7 @@ public class Grafo {
 
     public Grafo(boolean direcionado, boolean ponderado) {
         this.direcionado = direcionado;
+        this.ponderado = ponderado;
         vertices = new ArrayList<>();
         arestas = new ArrayList<>();
     }
@@ -285,6 +287,85 @@ public class Grafo {
         }
         System.out.println("Menor Caminho: " + Arrays.toString(menorCaminho));
         System.out.println("Comprimento: "+ menorComprimento);
+    }
+
+    public void buscaEmProfundidade(Vertice inicio, Vertice destino) {
+        boolean encontrado;
+        List<Vertice> visitados = new ArrayList<>();
+        List<Vertice> caminho = new ArrayList<>();
+        caminho.add(inicio);
+
+        // Verifica se o vértice de início é igual ao vértice de destino
+        if (inicio.equals(destino)) {
+            encontrado = true;
+        } else {
+            // Realiza a busca em profundidade recursiva
+            encontrado = buscaEmProfundidadeRecursivo(inicio, destino, visitados, caminho);
+        }
+
+        // Verifica se o destino foi encontrado ou não
+        if (encontrado) {
+            // Calcula o comprimento do caminho e exibe o resultado
+            int comprimento = calculaComprimento(caminho.toArray(new Vertice[0]));
+            System.out.println("Caminho encontrado: " + caminho);
+            System.out.println("Comprimento do caminho: " + comprimento);
+        } else {
+            // Exibe uma mensagem indicando que o vértice de destino não foi encontrado
+            System.out.println("O vértice destino não foi encontrado.");
+            System.out.println("Percurso ao longo do grafo: " + caminho);
+        }
+    }
+
+    private boolean buscaEmProfundidadeRecursivo(Vertice atual, Vertice destino, List<Vertice> visitados, List<Vertice> caminho) {
+        // Adiciona o vértice atual à lista de visitados
+        visitados.add(atual);
+
+        // Verifica se o vértice atual é igual ao vértice de destino
+        if (atual.equals(destino)) {
+            return true; // Retorna true, indicando que o destino foi encontrado
+        }
+
+        // Obtém os vizinhos do vértice atual
+        List<Vertice> vizinhos = obterVizinhos(atual);
+        for (Vertice vizinho : vizinhos) {
+            if (!visitados.contains(vizinho)) {
+                // Adiciona o vizinho ao caminho
+                caminho.add(vizinho);
+                // Realiza a busca em profundidade recursiva a partir do vizinho
+                boolean encontrado = buscaEmProfundidadeRecursivo(vizinho, destino, visitados, caminho);
+                if (encontrado) {
+                    return true; // Retorna true, indicando que o destino foi encontrado
+                }
+            }
+        }
+
+        return false; // Retorna false, indicando que o destino não foi encontrado
+    }
+
+    private List<Vertice> obterVizinhos(Vertice vertice) {
+        List<Vertice> vizinhos = new ArrayList<>();
+
+        // Percorre todas as arestas do grafo
+        for (Aresta aresta : arestas) {
+            if (direcionado) {
+                // Se o grafo for direcionado, verifica se a origem da aresta é igual ao vértice fornecido
+                if (aresta.getOrigem().equals(vertice)) {
+                    // Adiciona o destino da aresta à lista de vizinhos
+                    vizinhos.add(aresta.getDestino());
+                }
+            } else {
+                // Se o grafo não for direcionado
+                if (aresta.getOrigem().equals(vertice)) {
+                    // Se a origem da aresta for igual ao vértice fornecido, adiciona o destino à lista de vizinhos
+                    vizinhos.add(aresta.getDestino());
+                } else if (aresta.getDestino().equals(vertice)) {
+                    // Se o destino da aresta for igual ao vértice fornecido, adiciona a origem à lista de vizinhos
+                    vizinhos.add(aresta.getOrigem());
+                }
+            }
+        }
+
+        return vizinhos; // Retorna a lista de vizinhos do vértice
     }
 
 
