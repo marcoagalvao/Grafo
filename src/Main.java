@@ -10,7 +10,6 @@ public class Main {
         Vertice v5 = new Vertice("5");
         Vertice v6 = new Vertice("6");
         Vertice v7 = new Vertice("7");
-        Vertice v8 = new Vertice("8");
         g.addVertices(v1);
         g.addVertices(v2);
         g.addVertices(v3);
@@ -18,7 +17,6 @@ public class Main {
         g.addVertices(v5);
         g.addVertices(v6);
         g.addVertices(v7);
-        g.addVertices(v8);
 
 
         Aresta a1 = new Aresta(v1,v2);
@@ -55,6 +53,7 @@ public class Main {
         //System.out.println("O comprimento desse caminho é " + g.calculaComprimento(new Vertice[]{v1,v2,v3,v4}));
         //g.caminhoMenorComprimento(new Vertice[]{v2,v3,v4}, new Vertice[]{v1,v2,v3,v4}, new Vertice[]{v3,v4});
 
-        g.buscaEmProfundidade(v5, v8);
+        g.buscaEmProfundidade(v5, v1);
+        g.buscaEmLargura(v5,v1);
     }
 }

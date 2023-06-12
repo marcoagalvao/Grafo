@@ -1,9 +1,7 @@
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -366,6 +364,57 @@ public class Grafo {
         }
 
         return vizinhos; // Retorna a lista de vizinhos do vértice
+    }
+
+    public void buscaEmLargura(Vertice inicio, Vertice destino) {
+        Queue<Vertice> fila = new LinkedList<>();
+        List<Vertice> visitados = new ArrayList<>();
+        List<Vertice> caminho = new ArrayList<>();
+        boolean encontrado = false;
+
+        fila.add(inicio);
+        visitados.add(inicio);
+
+        while (!fila.isEmpty()) {
+            Vertice atual = fila.poll();
+            caminho.add(atual);
+
+            if (atual.equals(destino)) {
+                encontrado = true;
+                break;
+            }
+
+            List<Vertice> vizinhos = new ArrayList<>();
+            for (Aresta aresta : arestas) {
+                if (direcionado) {
+                    if (aresta.getOrigem().equals(atual)) {
+                        vizinhos.add(aresta.getDestino());
+                    }
+                } else {
+                    if (aresta.getOrigem().equals(atual)) {
+                        vizinhos.add(aresta.getDestino());
+                    } else if (aresta.getDestino().equals(atual)) {
+                        vizinhos.add(aresta.getOrigem());
+                    }
+                }
+            }
+
+            for (Vertice vizinho : vizinhos) {
+                if (!visitados.contains(vizinho)) {
+                    visitados.add(vizinho);
+                    fila.add(vizinho);
+                }
+            }
+        }
+
+        if (encontrado) {
+            int comprimento = calculaComprimento(caminho.toArray(new Vertice[0]));
+            System.out.println("Caminho encontrado: " + caminho);
+            System.out.println("Comprimento do caminho: " + comprimento);
+        } else {
+            System.out.println("O vértice destino não foi encontrado.");
+            System.out.println("Percurso ao longo do grafo: " + caminho);
+        }
     }
 
 
